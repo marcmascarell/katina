@@ -1,5 +1,9 @@
 # Katina - The PHP Output Validator
 
+[![Latest Version](https://img.shields.io/github/release/marcmascarell/katina.svg?style=flat-square)](https://github.com/marcmascarell/katina/releases)
+[![Travis](https://img.shields.io/travis/marcmascarell/katina.svg?maxAge=2592000?style=plastic)](https://travis-ci.org/marcmascarell/katina)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+
 Test helper class that **validates any kind of output based on the rules passed**. Useful to test API reponses or data that changes over time.
 
 ## Basic usage
