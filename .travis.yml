@@ -6,10 +6,6 @@ php:
   - 7.0
   - hhvm
 
-install:
-    - composer self-update
-    - composer install --prefer-source --no-interaction --dev
+install: composer install --prefer-source --no-interaction --dev
 
-script:
-    - php vendor/codeception/codeception/codecept bootstrap
-    - php vendor/codeception/codeception/codecept run
+script: ./vendor/bin/phpunit test/TestOutputValidatorTest.php

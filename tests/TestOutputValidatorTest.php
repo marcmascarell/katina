@@ -2,7 +2,7 @@
 
 use \Mascame\Katina\Validator;
 
-class TestOutputValidatorTest extends \Codeception\Test\Unit
+class TestOutputValidatorTest extends PHPUnit_Framework_TestCase
 {
     /**
      * Will avoid try catching. Note: Some fails are on purpose
@@ -131,7 +131,7 @@ class TestOutputValidatorTest extends \Codeception\Test\Unit
      */
     protected function checkIntegrity($validator, $data) {
         if (self::DEBUG) {
-            return $validator->checkIntegrity($data);
+            return $validator->debug()->checkIntegrity($data);
         }
 
         $integral = false;
@@ -147,9 +147,7 @@ class TestOutputValidatorTest extends \Codeception\Test\Unit
     {
         $data = [
             'foo' => [
-                12,
-                32,
-                44
+                12, 32, 44
             ]
         ];
 
@@ -162,7 +160,7 @@ class TestOutputValidatorTest extends \Codeception\Test\Unit
             [
                 'foo' => [
                     'type' => \Mascame\Katina\Validator\ArrayValidator::TYPE_INDEXED,
-                    'value' => 'string'
+                    'value' => 'bool'
                 ],
             ]
         );
