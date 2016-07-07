@@ -1,6 +1,6 @@
 {
-  "name": "mascame/output-validator",
-  "description": "Validates output",
+  "name": "mascame/katina",
+  "description": "Test helper class that validates any kind of output based on the rules passed. Useful to test API reponses or data that changes over time.",
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [

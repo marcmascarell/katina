@@ -10,7 +10,7 @@ $data = [
     'count' => 123,
 ];
 
-$validator = new \Mascame\OutputValidator\OutputValidator(['name' => 'string', 'count' => 'int']);
+$validator = new \Mascame\Katina\OutputValidator(['name' => 'string', 'count' => 'int']);
 
 $validator->checkIntegrity($data); // true
 ```
@@ -48,7 +48,7 @@ $arrayFields = [
     ],
 ];
 
-$validator = new \Mascame\OutputValidator\OutputValidator($requiredFields, $optionalFields, $arrayFields);
+$validator = new \Mascame\Katina\OutputValidator($requiredFields, $optionalFields, $arrayFields);
 
 $validator->checkIntegrity($data); // true
 ```
@@ -66,7 +66,7 @@ $data = [
 
 $requiredFields = ['my-birthday' => 'birthdayValidator'];
 
-$validator = new \Mascame\OutputValidator\OutputValidator($requiredFields);
+$validator = new \Mascame\Katina\OutputValidator($requiredFields);
 
 $validator->withValidators([
     'birthdayValidator' => \Namespace\MyBirthday::class
