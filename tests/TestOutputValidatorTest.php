@@ -1,6 +1,5 @@
 <?php
 
-use \Mascame\Katina\Validator;
 
 class TestValidatorTest extends PHPUnit_Framework_TestCase
 {
@@ -184,7 +183,9 @@ class TestValidatorTest extends PHPUnit_Framework_TestCase
         $validatorShouldWork = new \Mascame\Katina\Validator(
             [
                 'foo' => [
-                    '*' => ':any'
+                    'times' => ':int',
+                    'name' => ':string',
+                    'action' => true,
                 ],
             ],
             []
@@ -193,35 +194,41 @@ class TestValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->check($validatorShouldWork, $data));
     }
 
-//    public function testIndexedWithNestedAssociativeArray()
-//    {
-//        $data = [
-//            'foo' => [
-//                [
-//                    'times' => 12,
-//                    'name' => 'Jules',
-//                    'action' => true
-//                ],
-//                [
-//                    'times' => 12,
-//                    'name' => 'Jules',
-//                    'action' => true
-//                ],
-//                [
-//                    'times' => 12,
-//                    'name' => 'Jules',
-//                    'action' => true
-//                ]
-//            ]
-//        ];
-//
-//        $validator = new \Mascame\Katina\Validator(
-//            [
-//                'foo' => 'array',
-//            ],
-//            []
-//        );
-//
-//        $this->assertTrue($validator->debug()->check($data));
-//    }
+    public function testIndexedWithNestedAssociativeArray()
+    {
+        $data = [
+            'foo' => [
+                [
+                    'times' => 12,
+                    'name' => 'Jules',
+                    'action' => true
+                ],
+                [
+                    'times' => 12,
+                    'name' => 'Jules',
+                    'action' => true
+                ],
+                [
+                    'times' => 12,
+                    'name' => 'Jules',
+                    'action' => true
+                ]
+            ]
+        ];
+
+        $validator = new \Mascame\Katina\Validator(
+            [
+                'foo' => [
+                    '*' => [
+                        'times' => ':int',
+                        'name' => ':string',
+                        'action' => true,
+                    ]
+                ],
+            ],
+            []
+        );
+
+        $this->assertTrue($validator->debug()->check($data));
+    }
 }
