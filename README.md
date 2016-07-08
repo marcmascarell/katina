@@ -6,6 +6,8 @@
 
 Test helper class that **validates any kind of output based on the rules passed**. Useful to test API reponses or data that changes over time.
 
+A modernized version of [ptrofimov/matchmaker](https://github.com/ptrofimov/matchmaker) package.
+
 ## Installation
 
 `composer require mascame/katina --dev`
@@ -216,6 +218,6 @@ If you need help or any kind of support, please send an e-mail to Marc Mascarell
 
 ## License
 
-Credit to [Petr Trofimov](https://github.com/ptrofimov) for his package [ptrofimov/matchmaker](https://github.com/ptrofimov/matchmaker)
+Credit to [Petr Trofimov](https://github.com/ptrofimov) for his package [ptrofimov/matchmaker](https://github.com/ptrofimov/matchmaker) which this package is heavily based on.
 
 MIT
