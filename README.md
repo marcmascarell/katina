@@ -4,7 +4,7 @@
 [![Travis](https://img.shields.io/travis/marcmascarell/katina.svg?maxAge=2592000?style=flat-square)](https://travis-ci.org/marcmascarell/katina)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
-Test helper class that **validates any kind of output based on the rules passed**. Useful to test API reponses or data that changes over time.
+Test helper class that **validates any kind of output based on the passed rules**. Useful to test API reponses or data that changes over time.
 
 A modernized version of [ptrofimov/matchmaker](https://github.com/ptrofimov/matchmaker) package.
 
@@ -188,7 +188,7 @@ Matcher could be any callable (name of function or closure). You can add your ow
  * property(name, value)
  * method(name, value)
 
-For more details you can find [here](https://github.com/marcmascarell/katina/blob/master/src/Rules.php)
+For more details [click here](https://github.com/marcmascarell/katina/blob/master/src/Rules.php)
 
 ## Quantifiers for keys
 
