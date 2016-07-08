@@ -2,7 +2,7 @@
 
 use \Mascame\Katina\Validator;
 
-class TestOutputValidatorTest extends PHPUnit_Framework_TestCase
+class TestValidatorTest extends PHPUnit_Framework_TestCase
 {
     /**
      * Will avoid try catching. Note: Some fails are on purpose
@@ -20,6 +20,25 @@ class TestOutputValidatorTest extends PHPUnit_Framework_TestCase
 
     protected function _after()
     {
+    }
+
+    /**
+     * @param $validator \Mascame\Katina\Validator
+     * @param $data
+     * @return bool
+     */
+    protected function check($validator, $data) {
+        if (self::DEBUG) {
+            return $validator->debug()->check($data);
+        }
+
+        $integral = false;
+
+        try {
+            $integral = $validator->check($data);
+        } catch (\Exception $e) {}
+
+        return $integral;
     }
 
     // tests
@@ -55,92 +74,61 @@ class TestOutputValidatorTest extends PHPUnit_Framework_TestCase
                 true,
                 false
             ],
+            'arrayIndexed2' => [
+                [
+                    'string'
+                ],
+                [
+                    true
+                ],
+                [
+                    new DateTime()
+                ],
+            ],
             'myday' => '2016-12-10',
             'imdb' => 'tt4897822',
             'site' => 'http://coconuten.com',
             'floated' => 1.7,
-            'numeric' => '183232',
+            'numeric' => '183232'
         ];
 
-        $validator = new \Mascame\Katina\OutputValidator(
+        $validator = new \Mascame\Katina\Validator(
             [
-                'coconut' => 'string',
-                'myday' => 'date',
-                'imdb' => 'imdb',
-                'site' => 'url',
-                'floated' => 'float',
-                'numeric' => 'numeric',
-                'arrayFieldOptional' => 'array',
-                'arrayField' => 'array',
-                'arrayIndexed' => 'array',
-            ],
-            [],
-            [
+                'coconut' => ':string',
+                'myday' => ':date',
+                'imdb' => ':imdb',
+                'site' => ':url',
+                'floated' => ':float',
+                'numeric' => ':numeric',
                 'arrayFieldOptional' => [
-                    'type' => Validator\ArrayValidator::TYPE_INDEXED,
-                    'value' => 'string'
+                    ':string'
                 ],
                 'arrayField' => [
-                    'type' => Validator\ArrayValidator::TYPE_ASSOCIATIVE,
-                    'fields' => [
-                        'required' => [
-                            'coco' => 'string',
-                            'arrayInside' => 'array',
-                            'arrayInside2' => 'array',
-                        ],
-                        'optional' => [
-                            'optional' => 'string',
-                        ]
+                    'coco' => ':string',
+                    'thisDoesNotExist?' => ':int',
+                    'arrayInside' => [
+                        ':int'
                     ],
-                ],
-                'arrayInside' => [
-                    'type' => Validator\ArrayValidator::TYPE_INDEXED,
-                    'value' => 'int'
-                ],
-                'arrayInside2' => [
-                    'type' => Validator\ArrayValidator::TYPE_ASSOCIATIVE,
-                    'fields' => [
-                        'required' => [
-                            'foo' => 'string',
-                            'bar' => 'int',
-                            'arrayInsideOfInside' => 'array',
-                        ],
-                        'optional' => [
-                            'optional' => 'string',
+                    'arrayInside2' => [
+                        'foo' => ':string',
+                        'bar' => ':int',
+                        'arrayInsideOfInside' => [
+                            ':date'
                         ]
-                    ],
-                ],
-                'arrayInsideOfInside' => [
-                    'type' => Validator\ArrayValidator::TYPE_INDEXED,
-                    'value' => 'date'
+                    ]
                 ],
                 'arrayIndexed' => [
-                    'type' => Validator\ArrayValidator::TYPE_INDEXED,
-                    'value' => 'bool'
+                    ':bool'
+                ],
+                'arrayIndexed2' => [
+                    '*' => [
+                        ':any'
+                    ]
                 ],
             ]
         );
 
-        $this->assertTrue($this->checkIntegrity($validator, $data));
-    }
-
-    /**
-     * @param $validator \Mascame\Katina\OutputValidator
-     * @param $data
-     * @return bool
-     */
-    protected function checkIntegrity($validator, $data) {
-        if (self::DEBUG) {
-            return $validator->debug()->checkIntegrity($data);
-        }
-
-        $integral = false;
-
-        try {
-            $integral = $validator->checkIntegrity($data);
-        } catch (\Exception $e) {}
-
-        return $integral;
+        $this->assertTrue($this->check($validator, $data));
     }
 
     public function testIndexedArray()
@@ -151,38 +139,27 @@ class TestOutputValidatorTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $validatorShouldFail = new \Mascame\Katina\OutputValidator(
+        $validatorShouldFail = new \Mascame\Katina\Validator(
             [
-                'foo' => 'array',
-                'inexistent' => 'array',
+                'inexistent' => ':string',
             ],
-            [],
+            []
+        );
+
+        $this->assertFalse($this->check($validatorShouldFail, $data));
+
+        $validatorShouldWork = new \Mascame\Katina\Validator(
             [
                 'foo' => [
-                    'type' => \Mascame\Katina\Validator\ArrayValidator::TYPE_INDEXED,
-                    'value' => 'bool'
+                    ':int'
                 ],
+            ],
+            [
+                'inexistent' => ':string',
             ]
         );
 
-        $this->assertFalse($this->checkIntegrity($validatorShouldFail, $data));
-
-        $validatorShouldWork = new \Mascame\Katina\OutputValidator(
-            [
-                'foo' => 'array',
-            ],
-            [
-                'inexistent' => 'array',
-            ],
-            [
-                'foo' => [
-                    'type' => \Mascame\Katina\Validator\ArrayValidator::TYPE_INDEXED,
-                    'value' => 'int'
-                ],
-            ]
-        );
-
-        $this->assertTrue($this->checkIntegrity($validatorShouldWork, $data));
+        $this->assertTrue($this->check($validatorShouldWork, $data));
     }
 
     public function testAssociativeArray()
@@ -195,52 +172,56 @@ class TestOutputValidatorTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $validatorShouldFail = new \Mascame\Katina\OutputValidator(
+        $validatorShouldFail = new \Mascame\Katina\Validator(
             [
-                'foo' => 'array',
+                'foo' => ':bool',
             ],
-            [],
-            [
-                'foo' => [
-                    'type' => \Mascame\Katina\Validator\ArrayValidator::TYPE_ASSOCIATIVE,
-                    'fields' => [
-                        'required' => [
-                            'times' => 'int',
-                            'name' => 'string',
-                            'action' => 'bool',
-                            ':DDD' => 'int'
-                        ],
-                        'optional' => [
-                        ]
-                    ],
-                ],
-            ]
+            []
         );
 
-        $this->assertFalse($this->checkIntegrity($validatorShouldFail, $data));
+        $this->assertFalse($this->check($validatorShouldFail, $data));
 
-        $validatorShouldWork = new \Mascame\Katina\OutputValidator(
-            [
-                'foo' => 'array',
-            ],
-            [],
+        $validatorShouldWork = new \Mascame\Katina\Validator(
             [
                 'foo' => [
-                    'type' => \Mascame\Katina\Validator\ArrayValidator::TYPE_ASSOCIATIVE,
-                    'fields' => [
-                        'required' => [
-                            'times' => 'int',
-                            'name' => 'string',
-                            'action' => 'bool',
-                        ],
-                        'optional' => [
-                            ':DDD' => 'int'
-                        ]
-                    ],
+                    '*' => ':any'
                 ],
-            ]
+            ],
+            []
         );
 
-        $this->assertTrue($this->checkIntegrity($validatorShouldWork, $data));
+        $this->assertTrue($this->check($validatorShouldWork, $data));
     }
+
+//    public function testIndexedWithNestedAssociativeArray()
+//    {
+//        $data = [
+//            'foo' => [
+//                [
+//                    'times' => 12,
+//                    'name' => 'Jules',
+//                    'action' => true
+//                ],
+//                [
+//                    'times' => 12,
+//                    'name' => 'Jules',
+//                    'action' => true
+//                ],
+//                [
+//                    'times' => 12,
+//                    'name' => 'Jules',
+//                    'action' => true
+//                ]
+//            ]
+//        ];
+//
+//        $validator = new \Mascame\Katina\Validator(
+//            [
+//                'foo' => 'array',
+//            ],
+//            []
+//        );
+//
+//        $this->assertTrue($validator->debug()->check($data));
+//    }
 }

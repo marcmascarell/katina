@@ -7,7 +7,9 @@ class ValidatorException extends \Exception {
 
     public function __construct($constant, $extraInfo, $code = 0, \Exception $previous = null) 
     {
-        parent::__construct($constant . ': ' . $extraInfo, $code, $previous);
+        $message = ($extraInfo) ? $constant . ': ' . $extraInfo: $constant;
+
+        parent::__construct($message, $code, $previous);
     }
     
 }

@@ -14,9 +14,9 @@ $data = [
     'count' => 123,
 ];
 
-$validator = new \Mascame\Katina\OutputValidator(['name' => 'string', 'count' => 'int']);
+$validator = new \Mascame\Katina\Validator(['name' => ':string', 'count' => ':int']);
 
-$validator->checkIntegrity($data); // true
+$validator->check($data); // true
 ```
 
 ## Advanced usage
@@ -30,53 +30,75 @@ $data = [
         'nested-list' => [
             1, 2, 3
         ]
+    ],
+    'books' => [
+        [
+            'type' => 'book',
+            'title' => 'Geography book',
+            'chapters' => [
+                'eu' => ['title' => 'Europe', 'interesting' => true],
+                'as' => ['title' => 'America', 'interesting' => false]
+            ]
+        ],
+        [
+            'type' => 'book',
+            'title' => 'Foreign languages book',
+            'chapters' => [
+                'de' => ['title' => 'Deutsch']
+            ]
+        ]
     ]
 ];
 
-$requiredFields = ['name' => 'string', 'count' => 'int', 'list' => 'array'];
-$optionalFields = ['something' => 'boolean'];
-$arrayFields = [
+$requiredFields = [
+    'name' => ':string',
+    'count' => ':int',
     'list' => [
-        'type' => Validator\ArrayValidator::TYPE_ASSOCIATIVE,
-        'fields' => [
-            'required' => [
-                'nested-list' => 'array',
-                'emptyList' => 'boolean',
-            ],
-            'optional' => []
-        ],
+        'emptyList' => ':bool',
+        'nested-list' => [
+            ':int'
+        ]
     ],
-    'nested-list' => [
-        'type' => Validator\ArrayValidator::TYPE_INDEXED,
-        'value' => 'int'
-    ],
+    'books' => [
+        '*' => [
+            'type' => 'book',
+            'title' => ':string contains(book)',
+            'chapters' => [
+                ':string length(2) {1,3}' => [
+                    'title' => ':string',
+                    'interesting?' => ':bool',
+                ]
+            ]
+        ]
+    ]
 ];
 
-$validator = new \Mascame\Katina\OutputValidator($requiredFields, $optionalFields, $arrayFields);
+$optionalFields = [
+    'something' => 'boolean'
+];
 
-$validator->checkIntegrity($data); // true
+$validator = new \Mascame\Katina\Validator($requiredFields, $optionalFields);
+
+$validator->check($data); // true
 ```
 
-### Adding validators
-
-Extend `AbsctractValidator` and implement the required `isValid` method.
-
-Then add it to the validator like this:
+### Adding rules
 
 ```php
 $data = [
     'my-birthday' => '1980-01-01'
 ];
 
-$requiredFields = ['my-birthday' => 'birthdayValidator'];
+$requiredFields = ['my-birthday' => ':birthdayValidator'];
 
-$validator = new \Mascame\Katina\OutputValidator($requiredFields);
+$validator = new \Mascame\Katina\Validator($requiredFields);
 
-$validator->withValidators([
-    'birthdayValidator' => \Namespace\MyBirthday::class
-]);
+// You can add or override rules
+\Mascame\Katina\Rules::setRules(['birthdayValidator' => function($value) {
+    return ($value == '1980-01-01');
+}]);
 
-$validator->checkIntegrity($data); // true|false
+$validator->check($data); // true
 ```
 
 ##Contributing
