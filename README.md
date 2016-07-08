@@ -6,6 +6,10 @@
 
 Test helper class that **validates any kind of output based on the rules passed**. Useful to test API reponses or data that changes over time.
 
+## Installation
+
+`composer require mascame/katina --dev`
+
 ## Basic usage
 
 ```php
@@ -101,14 +105,117 @@ $validator = new \Mascame\Katina\Validator($requiredFields);
 $validator->check($data); // true
 ```
 
-##Contributing
+## Matching rules
+
+Matching rules are strings that start with ':'. You can use multiple matchers joined with space.
+
+Matcher could be any callable (name of function or closure). You can add your own rules or replace standard ones.
+
+* **General**
+
+ * empty
+ * nonempty
+ * required
+ * in(a, b, ...)
+ * mixed
+ * any
+
+* **Types**
+
+ * array
+ * bool
+ * boolean
+ * callable
+ * double
+ * float
+ * int
+ * integer
+ * long
+ * numeric
+ * number
+ * object
+ * real
+ * resource
+ * scalar
+ * string
+
+* **Numbers**
+
+ * gt(n)
+ * gte(n)
+ * lt(n)
+ * lte(n)
+ * negative
+ * positive
+ * between(a, b)
+
+* **Strings**
+
+ * alnum
+ * alpha
+ * cntrl
+ * digit
+ * graph
+ * lower
+ * print
+ * punct
+ * space
+ * upper
+ * xdigit
+ * regexp(pattern)
+ * email
+ * url
+ * ip
+ * length(n)
+ * min(n)
+ * max(n)
+ * contains(needle)
+ * starts(s)
+ * ends(s)
+ * json
+ * date
+
+* **Arrays**
+
+ * count(n)
+ * keys(key1, key2, ...)
+
+* **Objects**
+
+ * instance(class)
+ * property(name, value)
+ * method(name, value)
+
+For more details you can find [here](https://github.com/marcmascarell/katina/blob/master/src/Rules.php)
+
+## Quantifiers for keys
+
+* ! - one key required (default)
+* ? - optional key
+* * - any count of keys
+* {3} - strict count of keys
+* {1,5} - range
+
+For matchers (i.e. ':string') default quantifier is *
+
+## Using Matcher as standalone
+
+You can directly use Matcher:
+
+```php
+\Mascame\Katina\Matcher::matches(['test' => true], ['test' => ':bool']); // true
+```
+
+## Contributing
 
 Thank you for considering contributing! You can contribute at any time forking the project and making a pull request.
 
-##Support
+## Support
 
 If you need help or any kind of support, please send an e-mail to Marc Mascarell at marcmascarell@gmail.com.
 
-##License
+## License
+
+Credit to [Petr Trofimov](https://github.com/ptrofimov) for his package [ptrofimov/matchmaker](https://github.com/ptrofimov/matchmaker)
 
 MIT
